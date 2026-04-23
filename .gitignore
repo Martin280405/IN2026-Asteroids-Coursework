@@ -1,0 +1,32 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/copilot-chat/57d6068c/sessions
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/CopilotIndices/18.4.111.64248/CodeChunks.db-shm
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/FileContentIndex/145092d9-0ddd-4ebe-b49b-b735b0956a74.vsidx
+*.vsidx
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/v18/ipch/AutoPCH/d5466093643d1aea/ASTEROIDS.ipch
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/CopilotIndices/18.4.111.64248/SemanticSymbols.db-shm
+*.ipch
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/v18/.suo
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/v18/Browse.VC.db
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/v18/Browse.VC.db-wal
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/v18/DocumentLayout.backup.json
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/v18/DocumentLayout.json
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/v18/Upgrade.VC.txt
+/IN2026 Coursework Code/VC/Asteroids/Debug/Asteroids.tlog/link.read.1.tlog
+/.gitignore
+/.gitignore
+/IN2026 Coursework Code/VC/Asteroids/Debug/Asteroids.ilk
+/IN2026 Coursework Code/VC/Asteroids/Debug/Asteroids.log
+/IN2026 Coursework Code/VC/Asteroids/Debug/Asteroids.obj
+/IN2026 Coursework Code/VC/Asteroids/Debug/Asteroids.pdb
+/IN2026 Coursework Code/VC/Asteroids/Debug/vc145.idb
+/IN2026 Coursework Code/VC/Asteroids/Debug/vc145.pdb
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/CopilotIndices/18.4.111.64248/CodeChunks.db
+/IN2026 Coursework Code/BIN/Asteroids.exe
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/CopilotIndices/18.4.111.64248/CodeChunks.db-wal
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/CopilotIndices/18.4.111.64248/SemanticSymbols.db
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/CopilotIndices/18.4.111.64248/SemanticSymbols.db-wal
+/IN2026 Coursework Code/VC/Asteroids/.vs/Asteroids/v18/Browse.VC.db-shm

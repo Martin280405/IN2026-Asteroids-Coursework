@@ -68,6 +68,8 @@ private:
 
 	ScoreKeeper mScoreKeeper;
 	Player mPlayer;
+
+	bool gameStarted;
 };
 
-#endif
+#endif 
