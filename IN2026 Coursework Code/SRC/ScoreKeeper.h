@@ -38,6 +38,7 @@ public:
 		}
 	}
 	int GetScore() { return mScore; }
+	void ResetScore() { mScore = 0; FireScoreChanged(); }
 
 private:
 	int mScore;

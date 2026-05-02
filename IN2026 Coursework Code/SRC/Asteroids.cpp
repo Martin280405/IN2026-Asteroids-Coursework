@@ -335,16 +335,19 @@ void Asteroids::StartGame()
 	mGameState = PLAYING;
 	mLevel = 0;
 	mAsteroidCount = 0;
+	mPlayer.ResetLives();
+	mPlayer.ResetLives();
+	mScoreKeeper.ResetScore();
 	mStartLabel->SetVisible(false);
 	mDifficultyLabel->SetVisible(false);
 	mInstructionsLabel->SetVisible(false);
 	mHighScoreLabel->SetVisible(false);
 	mScoreLabel->SetVisible(true);
 	mLivesLabel->SetVisible(true);
+	mLivesLabel->SetText("Lives: 3"); 
 	mGameWorld->AddObject(CreateSpaceship());
 	CreateAsteroids(10);
 }
-
 void Asteroids::ShowHighScores()
 {
 	std::ostringstream ss;

@@ -39,6 +39,8 @@ public:
 			(*lit)->OnPlayerKilled(mLives);
 		}
 	}
+	void ResetLives() { mLives = 3; }
+	int GetLives() { return mLives; }
 
 private:
 	int mLives;
