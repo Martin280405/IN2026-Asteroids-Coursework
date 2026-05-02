@@ -20,6 +20,7 @@ Asteroids::Asteroids(int argc, char* argv[])
 	mLevel = 0;
 	mAsteroidCount = 0;
 	gameStarted = false;
+	mHardMode = false;  // NEW
 }
 
 Asteroids::~Asteroids(void)
@@ -49,8 +50,6 @@ void Asteroids::Start()
 
 	// GUI
 	CreateGUI();
-	mGameOverLabel->SetText("PRESS ENTER TO START");
-	mGameOverLabel->SetVisible(true);
 
 	mGameWorld->AddListener(&mPlayer);
 	mPlayer.AddListener(thisPtr);
@@ -67,23 +66,27 @@ void Asteroids::Stop()
 
 void Asteroids::OnKeyPressed(uchar key, int x, int y)
 {
-	// 🚀 START GAME ON ENTER
-	if (!gameStarted && key == 13)
+	if (!gameStarted)
 	{
-		gameStarted = true;
-
-		mGameOverLabel->SetVisible(false);
-		mScoreLabel->SetVisible(true);
-		mLivesLabel->SetVisible(true);
-
-		shared_ptr<GameObject> ship = CreateSpaceship();
-		mGameWorld->AddObject(ship);
-
-		CreateAsteroids(10);
+		// ENTER starts the game
+		if (key == 13)
+		{
+			StartGame();  // NEW
+			return;
+		}
+		// D toggles difficulty
+		if (key == 'd' || key == 'D')  // NEW
+		{
+			mHardMode = !mHardMode;
+			if (mHardMode)
+				mDifficultyLabel->SetText("Difficulty: HARD (power-ups ON)  | Press D to change | Press Enter to Start");
+			else
+				mDifficultyLabel->SetText("Difficulty: EASY (power-ups OFF) | Press D to change | Press Enter to Start");
+		}
 		return;
 	}
 
-	if (!gameStarted || !mSpaceship) return;
+	if (!mSpaceship) return;
 
 	if (key == ' ')
 	{
@@ -95,22 +98,6 @@ void Asteroids::OnKeyReleased(uchar key, int x, int y) {}
 
 void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
-	// START GAME
-	if (!gameStarted && key == 13)
-	{
-		gameStarted = true;
-
-		mGameOverLabel->SetVisible(false);
-		mScoreLabel->SetVisible(true);
-		mLivesLabel->SetVisible(true);
-
-		shared_ptr<GameObject> ship = CreateSpaceship();
-		mGameWorld->AddObject(ship);
-
-		CreateAsteroids(10);
-		return;
-	}
-
 	if (!gameStarted || !mSpaceship) return;
 
 	switch (key)
@@ -185,9 +172,7 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 	mSpaceship->SetBulletShape(make_shared<Shape>("bullet.shape"));
 
 	Animation* anim = AnimationManager::GetInstance().GetAnimationByName("spaceship");
-
-	shared_ptr<Sprite> sprite =
-		make_shared<Sprite>(anim->GetWidth(), anim->GetHeight(), anim);
+	shared_ptr<Sprite> sprite = make_shared<Sprite>(anim->GetWidth(), anim->GetHeight(), anim);
 
 	mSpaceship->SetSprite(sprite);
 	mSpaceship->SetScale(0.1f);
@@ -203,14 +188,10 @@ void Asteroids::CreateAsteroids(const uint num_asteroids)
 	for (uint i = 0; i < num_asteroids; i++)
 	{
 		Animation* anim = AnimationManager::GetInstance().GetAnimationByName("asteroid1");
-
-		shared_ptr<Sprite> sprite =
-			make_shared<Sprite>(anim->GetWidth(), anim->GetHeight(), anim);
-
+		shared_ptr<Sprite> sprite = make_shared<Sprite>(anim->GetWidth(), anim->GetHeight(), anim);
 		sprite->SetLoopAnimation(true);
 
 		shared_ptr<GameObject> asteroid = make_shared<Asteroid>();
-
 		asteroid->SetBoundingShape(make_shared<BoundingSphere>(asteroid->GetThisPtr(), 10.0f));
 		asteroid->SetSprite(sprite);
 		asteroid->SetScale(0.2f);
@@ -225,35 +206,41 @@ void Asteroids::CreateGUI()
 {
 	mGameDisplay->GetContainer()->SetBorder(GLVector2i(10, 10));
 
+	// Score label - hidden until game starts
 	mScoreLabel = make_shared<GUILabel>("Score: 0");
 	mScoreLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
-
+	mScoreLabel->SetVisible(false);  // hidden on menu
 	mGameDisplay->GetContainer()->AddComponent(
-		static_pointer_cast<GUIComponent>(mScoreLabel),
-		GLVector2f(0.0f, 1.0f)
-	);
+		static_pointer_cast<GUIComponent>(mScoreLabel), GLVector2f(0.0f, 1.0f));
 
+	// Lives label - hidden until game starts
 	mLivesLabel = make_shared<GUILabel>("Lives: 3");
 	mLivesLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_BOTTOM);
-
+	mLivesLabel->SetVisible(false);  // hidden on menu
 	mGameDisplay->GetContainer()->AddComponent(
-		static_pointer_cast<GUIComponent>(mLivesLabel),
-		GLVector2f(0.0f, 0.0f)
-	);
+		static_pointer_cast<GUIComponent>(mLivesLabel), GLVector2f(0.0f, 0.0f));
 
+	// Game over label - hidden until needed
 	mGameOverLabel = make_shared<GUILabel>("GAME OVER");
 	mGameOverLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	mGameOverLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
 	mGameOverLabel->SetVisible(false);
-
 	mGameDisplay->GetContainer()->AddComponent(
-		static_pointer_cast<GUIComponent>(mGameOverLabel),
-		GLVector2f(0.5f, 0.5f)
-	);
+		static_pointer_cast<GUIComponent>(mGameOverLabel), GLVector2f(0.5f, 0.5f));
 
-	// Hide UI initially
-	mScoreLabel->SetVisible(false);
-	mLivesLabel->SetVisible(false);
+	// NEW: Start label
+	mStartLabel = make_shared<GUILabel>("ASTEROIDS  |  Press Enter to Start");
+	mStartLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	mStartLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mGameDisplay->GetContainer()->AddComponent(
+		static_pointer_cast<GUIComponent>(mStartLabel), GLVector2f(0.5f, 0.6f));
+
+	// NEW: Difficulty label
+	mDifficultyLabel = make_shared<GUILabel>("Difficulty: EASY (power-ups OFF) | Press D to change | Press Enter to Start");
+	mDifficultyLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	mDifficultyLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mGameDisplay->GetContainer()->AddComponent(
+		static_pointer_cast<GUIComponent>(mDifficultyLabel), GLVector2f(0.5f, 0.5f));
 }
 
 // SCORE ////////////////////////////////////////////////////
@@ -270,10 +257,8 @@ void Asteroids::OnScoreChanged(int score)
 void Asteroids::OnPlayerKilled(int lives_left)
 {
 	shared_ptr<GameObject> explosion = CreateExplosion();
-
 	explosion->SetPosition(mSpaceship->GetPosition());
 	explosion->SetRotation(mSpaceship->GetRotation());
-
 	mGameWorld->AddObject(explosion);
 
 	std::ostringstream msg;
@@ -295,16 +280,31 @@ void Asteroids::OnPlayerKilled(int lives_left)
 shared_ptr<GameObject> Asteroids::CreateExplosion()
 {
 	Animation* anim = AnimationManager::GetInstance().GetAnimationByName("explosion");
-
-	shared_ptr<Sprite> sprite =
-		make_shared<Sprite>(anim->GetWidth(), anim->GetHeight(), anim);
-
+	shared_ptr<Sprite> sprite = make_shared<Sprite>(anim->GetWidth(), anim->GetHeight(), anim);
 	sprite->SetLoopAnimation(false);
 
 	shared_ptr<GameObject> explosion = make_shared<Explosion>();
-
 	explosion->SetSprite(sprite);
 	explosion->Reset();
 
 	return explosion;
+}
+
+// NEW: StartGame ////////////////////////////////////////////////////
+
+void Asteroids::StartGame()
+{
+	gameStarted = true;
+
+	// Hide menu labels
+	mStartLabel->SetVisible(false);
+	mDifficultyLabel->SetVisible(false);
+
+	// Show game UI
+	mScoreLabel->SetVisible(true);
+	mLivesLabel->SetVisible(true);
+
+	// Spawn ship and asteroids
+	mGameWorld->AddObject(CreateSpaceship());
+	CreateAsteroids(10);
 }
