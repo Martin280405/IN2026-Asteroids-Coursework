@@ -37,6 +37,7 @@ public:
 			(*lit)->OnScoreChanged(mScore);
 		}
 	}
+	int GetScore() { return mScore; }
 
 private:
 	int mScore;

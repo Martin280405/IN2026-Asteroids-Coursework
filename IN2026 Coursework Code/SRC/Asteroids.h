@@ -9,6 +9,8 @@
 #include "ScoreKeeper.h"
 #include "Player.h"
 #include "IPlayerListener.h"
+#include <vector>    
+#include <string>
 
 class GameObject;
 class Spaceship;
@@ -47,33 +49,48 @@ public:
 	void OnTimer(int value);
 
 private:
-	shared_ptr<Spaceship> mSpaceship;
-	shared_ptr<GUILabel> mScoreLabel;
-	shared_ptr<GUILabel> mLivesLabel;
-	shared_ptr<GUILabel> mGameOverLabel;
+    shared_ptr<Spaceship> mSpaceship;
+    shared_ptr<GUILabel> mScoreLabel;
+    shared_ptr<GUILabel> mLivesLabel;
+    shared_ptr<GUILabel> mGameOverLabel;
 
-	uint mLevel;
-	uint mAsteroidCount;
+    uint mLevel;
+    uint mAsteroidCount;
 
-	void ResetSpaceship();
-	shared_ptr<GameObject> CreateSpaceship();
-	void CreateGUI();
-	void CreateAsteroids(const uint num_asteroids);
-	shared_ptr<GameObject> CreateExplosion();
+    enum GameState { MENU, PLAYING, ENTER_NAME, HIGH_SCORES };
+    GameState mGameState;
+    bool mHardMode;
 
-	const static uint SHOW_GAME_OVER = 0;
-	const static uint START_NEXT_LEVEL = 1;
-	const static uint CREATE_NEW_PLAYER = 2;
+    
+    shared_ptr<GUILabel> mStartLabel;
+    shared_ptr<GUILabel> mDifficultyLabel;
+    shared_ptr<GUILabel> mInstructionsLabel;
+    shared_ptr<GUILabel> mHighScoreLabel;
+    shared_ptr<GUILabel> mEnterNameLabel;
 
-	ScoreKeeper mScoreKeeper;
-	Player mPlayer;
+    struct ScoreEntry {
+        std::string name;
+        int score;
+    };
+    std::vector<ScoreEntry> mHighScores;
+    std::string mCurrentName;
 
-	bool gameStarted;
-	bool mHardMode;                         
-	shared_ptr<GUILabel> mStartLabel;       
-	shared_ptr<GUILabel> mDifficultyLabel;
-	shared_ptr<GUILabel> mInstructionsLabel;
-	void StartGame();                        
+    void ResetSpaceship();
+    shared_ptr<GameObject> CreateSpaceship();
+    void CreateGUI();
+    void CreateAsteroids(const uint num_asteroids);
+    shared_ptr<GameObject> CreateExplosion();
+    void StartGame();
+    void ShowHighScores();
+    std::string BuildHighScoreString();
+
+    const static uint SHOW_GAME_OVER = 0;
+    const static uint START_NEXT_LEVEL = 1;
+    const static uint CREATE_NEW_PLAYER = 2;
+
+    ScoreKeeper mScoreKeeper;
+    Player mPlayer;
 };
+
 
 #endif
