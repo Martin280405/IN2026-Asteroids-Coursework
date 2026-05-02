@@ -48,11 +48,13 @@ void Asteroids::Start()
 	AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
 
-	// GUI
+	
 	CreateGUI();
 
 	mGameWorld->AddListener(&mPlayer);
 	mPlayer.AddListener(thisPtr);
+
+	CreateAsteroids(10);
 
 	GameSession::Start();
 }
@@ -62,26 +64,34 @@ void Asteroids::Stop()
 	GameSession::Stop();
 }
 
-// KEYBOARD ////////////////////////////////////////////////////
+
 
 void Asteroids::OnKeyPressed(uchar key, int x, int y)
 {
 	if (!gameStarted)
 	{
-		// ENTER starts the game
+		
 		if (key == 13)
 		{
-			StartGame();  // NEW
+			StartGame();  
 			return;
 		}
-		// D toggles difficulty
-		if (key == 'd' || key == 'D')  // NEW
+		
+		if (key == 'd' || key == 'D')  
 		{
 			mHardMode = !mHardMode;
 			if (mHardMode)
 				mDifficultyLabel->SetText("Difficulty: HARD (power-ups ON)  | Press D to change | Press Enter to Start");
 			else
 				mDifficultyLabel->SetText("Difficulty: EASY (power-ups OFF) | Press D to change | Press Enter to Start");
+		
+		}
+		if (key == 'i' || key == 'I')  
+		{
+			bool currentlyVisible = mInstructionsLabel->GetVisible();
+			mInstructionsLabel->SetVisible(!currentlyVisible);
+		
+		
 		}
 		return;
 	}
@@ -120,7 +130,7 @@ void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 	}
 }
 
-// GAME WORLD ////////////////////////////////////////////////////
+
 
 void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 {
@@ -140,7 +150,7 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 	}
 }
 
-// TIMER ////////////////////////////////////////////////////
+
 
 void Asteroids::OnTimer(int value)
 {
@@ -162,7 +172,7 @@ void Asteroids::OnTimer(int value)
 	}
 }
 
-// OBJECT CREATION ////////////////////////////////////////////////////
+
 
 shared_ptr<GameObject> Asteroids::CreateSpaceship()
 {
@@ -200,27 +210,27 @@ void Asteroids::CreateAsteroids(const uint num_asteroids)
 	}
 }
 
-// GUI ////////////////////////////////////////////////////
+
 
 void Asteroids::CreateGUI()
 {
 	mGameDisplay->GetContainer()->SetBorder(GLVector2i(10, 10));
 
-	// Score label - hidden until game starts
+	
 	mScoreLabel = make_shared<GUILabel>("Score: 0");
 	mScoreLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
-	mScoreLabel->SetVisible(false);  // hidden on menu
+	mScoreLabel->SetVisible(false);  
 	mGameDisplay->GetContainer()->AddComponent(
 		static_pointer_cast<GUIComponent>(mScoreLabel), GLVector2f(0.0f, 1.0f));
 
-	// Lives label - hidden until game starts
+	
 	mLivesLabel = make_shared<GUILabel>("Lives: 3");
 	mLivesLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_BOTTOM);
-	mLivesLabel->SetVisible(false);  // hidden on menu
+	mLivesLabel->SetVisible(false);  
 	mGameDisplay->GetContainer()->AddComponent(
 		static_pointer_cast<GUIComponent>(mLivesLabel), GLVector2f(0.0f, 0.0f));
 
-	// Game over label - hidden until needed
+	
 	mGameOverLabel = make_shared<GUILabel>("GAME OVER");
 	mGameOverLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	mGameOverLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
@@ -228,22 +238,29 @@ void Asteroids::CreateGUI()
 	mGameDisplay->GetContainer()->AddComponent(
 		static_pointer_cast<GUIComponent>(mGameOverLabel), GLVector2f(0.5f, 0.5f));
 
-	// NEW: Start label
-	mStartLabel = make_shared<GUILabel>("ASTEROIDS  |  Press Enter to Start");
+	
+	mStartLabel = make_shared<GUILabel>("ASTEROIDS  |  Press I for Instructions  |  Press Enter to Start");
 	mStartLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	mStartLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
 	mGameDisplay->GetContainer()->AddComponent(
 		static_pointer_cast<GUIComponent>(mStartLabel), GLVector2f(0.5f, 0.6f));
 
-	// NEW: Difficulty label
+	
 	mDifficultyLabel = make_shared<GUILabel>("Difficulty: EASY (power-ups OFF) | Press D to change | Press Enter to Start");
 	mDifficultyLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	mDifficultyLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
 	mGameDisplay->GetContainer()->AddComponent(
 		static_pointer_cast<GUIComponent>(mDifficultyLabel), GLVector2f(0.5f, 0.5f));
+
+	mInstructionsLabel = make_shared<GUILabel>(
+		"HOW TO PLAY:  UP ARROW = Thrust  |  LEFT/RIGHT ARROW = Rotate  |  SPACE = Shoot  |  D = Difficulty  |  ENTER = Start");
+	mInstructionsLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	mInstructionsLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mInstructionsLabel->SetVisible(false);
+	mGameDisplay->GetContainer()->AddComponent(
+		static_pointer_cast<GUIComponent>(mInstructionsLabel), GLVector2f(0.5f, 0.35f));
 }
 
-// SCORE ////////////////////////////////////////////////////
 
 void Asteroids::OnScoreChanged(int score)
 {
@@ -252,7 +269,7 @@ void Asteroids::OnScoreChanged(int score)
 	mScoreLabel->SetText(msg.str());
 }
 
-// PLAYER ////////////////////////////////////////////////////
+
 
 void Asteroids::OnPlayerKilled(int lives_left)
 {
@@ -275,7 +292,7 @@ void Asteroids::OnPlayerKilled(int lives_left)
 	}
 }
 
-// EXPLOSION ////////////////////////////////////////////////////
+
 
 shared_ptr<GameObject> Asteroids::CreateExplosion()
 {
@@ -290,21 +307,16 @@ shared_ptr<GameObject> Asteroids::CreateExplosion()
 	return explosion;
 }
 
-// NEW: StartGame ////////////////////////////////////////////////////
+
 
 void Asteroids::StartGame()
 {
 	gameStarted = true;
-
-	// Hide menu labels
 	mStartLabel->SetVisible(false);
 	mDifficultyLabel->SetVisible(false);
-
-	// Show game UI
+	mInstructionsLabel->SetVisible(false);
 	mScoreLabel->SetVisible(true);
 	mLivesLabel->SetVisible(true);
-
-	// Spawn ship and asteroids
 	mGameWorld->AddObject(CreateSpaceship());
 	CreateAsteroids(10);
 }

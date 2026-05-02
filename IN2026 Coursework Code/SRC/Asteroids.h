@@ -23,28 +23,27 @@ public:
 	virtual void Start(void);
 	virtual void Stop(void);
 
-	// Declaration of IKeyboardListener interface ////////////////////////////////
+	
 
 	void OnKeyPressed(uchar key, int x, int y);
 	void OnKeyReleased(uchar key, int x, int y);
 	void OnSpecialKeyPressed(int key, int x, int y);
 	void OnSpecialKeyReleased(int key, int x, int y);
 
-	// Declaration of IScoreListener interface //////////////////////////////////
+	
 
 	void OnScoreChanged(int score);
 
-	// Declaration of the IPlayerLister interface //////////////////////////////
 
 	void OnPlayerKilled(int lives_left);
 
-	// Declaration of IGameWorldListener interface //////////////////////////////
+	
 
 	void OnWorldUpdated(GameWorld* world) {}
 	void OnObjectAdded(GameWorld* world, shared_ptr<GameObject> object) {}
 	void OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object);
 
-	// Override the default implementation of ITimerListener ////////////////////
+	
 	void OnTimer(int value);
 
 private:
@@ -72,7 +71,8 @@ private:
 	bool gameStarted;
 	bool mHardMode;                         
 	shared_ptr<GUILabel> mStartLabel;       
-	shared_ptr<GUILabel> mDifficultyLabel;  
+	shared_ptr<GUILabel> mDifficultyLabel;
+	shared_ptr<GUILabel> mInstructionsLabel;
 	void StartGame();                        
 };
 
