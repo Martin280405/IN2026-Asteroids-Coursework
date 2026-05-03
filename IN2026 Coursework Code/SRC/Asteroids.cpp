@@ -11,6 +11,7 @@
 #include "BoundingSphere.h"
 #include "GUILabel.h"
 #include "Explosion.h"
+#include "ExtraLife.h"
 #include <algorithm>
 
 Asteroids::Asteroids(int argc, char* argv[])
@@ -45,6 +46,7 @@ void Asteroids::Start()
 	AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
 	AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
+	AnimationManager::GetInstance().CreateAnimationFromFile("extralife", 128, 128, 128, 128, "extralife_fs.png");
 
 	CreateGUI();
 
@@ -166,10 +168,23 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 
 		mAsteroidCount--;
 
+		if (rand() % 5 == 0 && mGameState == PLAYING)
+		{
+			CreateExtraLife();
+		}
+
 		if (mAsteroidCount <= 0 && mGameState == PLAYING)
 		{
 			SetTimer(500, START_NEXT_LEVEL);
 		}
+	}
+
+	if (object->GetType() == GameObjectType("ExtraLife"))
+	{
+		mPlayer.AddLife();
+		std::ostringstream msg;
+		msg << "Lives: " << mPlayer.GetLives();
+		mLivesLabel->SetText(msg.str());
 	}
 }
 
@@ -336,7 +351,6 @@ void Asteroids::StartGame()
 	mLevel = 0;
 	mAsteroidCount = 0;
 	mPlayer.ResetLives();
-	mPlayer.ResetLives();
 	mScoreKeeper.ResetScore();
 	mStartLabel->SetVisible(false);
 	mDifficultyLabel->SetVisible(false);
@@ -344,10 +358,11 @@ void Asteroids::StartGame()
 	mHighScoreLabel->SetVisible(false);
 	mScoreLabel->SetVisible(true);
 	mLivesLabel->SetVisible(true);
-	mLivesLabel->SetText("Lives: 3"); 
+	mLivesLabel->SetText("Lives: 3");
 	mGameWorld->AddObject(CreateSpaceship());
 	CreateAsteroids(10);
 }
+
 void Asteroids::ShowHighScores()
 {
 	std::ostringstream ss;
@@ -371,4 +386,17 @@ std::string Asteroids::BuildHighScoreString()
 	for (int i = 0; i < (int)mHighScores.size(); i++)
 		ss << i + 1 << ". " << mHighScores[i].name << " - " << mHighScores[i].score << "   ";
 	return ss.str();
+}
+
+void Asteroids::CreateExtraLife()
+{
+	Animation* anim = AnimationManager::GetInstance().GetAnimationByName("extralife");
+	shared_ptr<Sprite> sprite = make_shared<Sprite>(anim->GetWidth(), anim->GetHeight(), anim);
+	sprite->SetLoopAnimation(true);
+
+	shared_ptr<GameObject> extraLife = make_shared<ExtraLife>();
+	extraLife->SetBoundingShape(make_shared<BoundingSphere>(extraLife->GetThisPtr(), 5.0f));
+	extraLife->SetSprite(sprite);
+	extraLife->SetScale(0.2f);
+	mGameWorld->AddObject(extraLife);
 }

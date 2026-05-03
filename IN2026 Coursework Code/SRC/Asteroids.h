@@ -15,6 +15,7 @@
 class GameObject;
 class Spaceship;
 class GUILabel;
+class ExtraLife;
 
 class Asteroids : public GameSession, public IKeyboardListener, public IGameWorldListener, public IScoreListener, public IPlayerListener
 {
@@ -81,6 +82,7 @@ private:
     void CreateAsteroids(const uint num_asteroids);
     shared_ptr<GameObject> CreateExplosion();
     void StartGame();
+    void CreateExtraLife();
     void ShowHighScores();
     std::string BuildHighScoreString();
 

@@ -41,6 +41,7 @@ public:
 	}
 	void ResetLives() { mLives = 3; }
 	int GetLives() { return mLives; }
+	void AddLife() { mLives++; }
 
 private:
 	int mLives;
