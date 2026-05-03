@@ -24,11 +24,16 @@ public:
 	void SetThrusterShape(shared_ptr<Shape> thruster_shape) { mThrusterShape = thruster_shape; }
 	void SetBulletShape(shared_ptr<Shape> bullet_shape) { mBulletShape = bullet_shape; }
 
+	void SetInvulnerable(bool inv) { mInvulnerable = inv; mInvulnerableTimer = 0; }
+	bool IsInvulnerable() { return mInvulnerable; }
+
 	bool CollisionTest(shared_ptr<GameObject> o);
-	void OnCollision(const GameObjectList &objects);
+	void OnCollision(const GameObjectList& objects);
 
 private:
 	float mThrust;
+	bool mInvulnerable;
+	int mInvulnerableTimer;
 
 	shared_ptr<Shape> mSpaceshipShape;
 	shared_ptr<Shape> mThrusterShape;

@@ -128,6 +128,12 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 		if (!mSpaceship) return;
 		if (key == ' ')
 			mSpaceship->Shoot();
+		if (key == 's' || key == 'S')
+		{
+			mSpaceship->SetInvulnerable(true);
+			mShieldLabel->SetVisible(true);
+			SetTimer(5000, 4);
+		}
 	}
 }
 
@@ -205,6 +211,12 @@ void Asteroids::OnTimer(int value)
 	if (value == SHOW_GAME_OVER)
 	{
 	}
+
+	if (value == 4)
+	{
+		if (mSpaceship) mSpaceship->SetInvulnerable(false);
+		mShieldLabel->SetVisible(false);
+	}
 }
 
 shared_ptr<GameObject> Asteroids::CreateSpaceship()
@@ -279,7 +291,7 @@ void Asteroids::CreateGUI()
 		static_pointer_cast<GUIComponent>(mDifficultyLabel), GLVector2f(0.5f, 0.55f));
 
 	mInstructionsLabel = make_shared<GUILabel>(
-		"HOW TO PLAY:  UP ARROW = Thrust  |  LEFT/RIGHT ARROW = Rotate  |  SPACE = Shoot  |  D = Difficulty  |  ENTER = Start");
+		"UP ARROW = Thrust  |  LEFT/RIGHT = Rotate  |  SPACE = Shoot  |  S = Shield  |  D = Difficulty  |  ENTER = Start");
 	mInstructionsLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	mInstructionsLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
 	mInstructionsLabel->SetVisible(false);
@@ -299,6 +311,13 @@ void Asteroids::CreateGUI()
 	mHighScoreLabel->SetVisible(false);
 	mGameDisplay->GetContainer()->AddComponent(
 		static_pointer_cast<GUIComponent>(mHighScoreLabel), GLVector2f(0.5f, 0.5f));
+
+	mShieldLabel = make_shared<GUILabel>("** SHIELD ACTIVE **");
+	mShieldLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	mShieldLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mShieldLabel->SetVisible(false);
+	mGameDisplay->GetContainer()->AddComponent(
+		static_pointer_cast<GUIComponent>(mShieldLabel), GLVector2f(0.5f, 0.8f));
 }
 
 void Asteroids::OnScoreChanged(int score)
@@ -356,6 +375,7 @@ void Asteroids::StartGame()
 	mDifficultyLabel->SetVisible(false);
 	mInstructionsLabel->SetVisible(false);
 	mHighScoreLabel->SetVisible(false);
+	mShieldLabel->SetVisible(false);
 	mScoreLabel->SetVisible(true);
 	mLivesLabel->SetVisible(true);
 	mLivesLabel->SetText("Lives: 3");

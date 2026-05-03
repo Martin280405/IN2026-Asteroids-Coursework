@@ -7,17 +7,17 @@
 using namespace std;
 
 Spaceship::Spaceship()
-	: GameObject("Spaceship"), mThrust(0)
+	: GameObject("Spaceship"), mThrust(0), mInvulnerable(false), mInvulnerableTimer(0)
 {
 }
 
 Spaceship::Spaceship(GLVector3f p, GLVector3f v, GLVector3f a, GLfloat h, GLfloat r)
-	: GameObject("Spaceship", p, v, a, h, r), mThrust(0)
+	: GameObject("Spaceship", p, v, a, h, r), mThrust(0), mInvulnerable(false), mInvulnerableTimer(0)
 {
 }
 
 Spaceship::Spaceship(const Spaceship& s)
-	: GameObject(s), mThrust(0)
+	: GameObject(s), mThrust(0), mInvulnerable(false), mInvulnerableTimer(0)
 {
 }
 
@@ -28,8 +28,24 @@ Spaceship::~Spaceship(void)
 void Spaceship::Update(int t)
 {
 	GameObject::Update(t);
-}
 
+	if (mInvulnerable)
+	{
+		mInvulnerableTimer += t;
+		if (mInvulnerableTimer > 200)
+		{
+			mInvulnerableTimer = 0;
+			if (mScale > 0.05f)
+				mScale = 0.01f;
+			else
+				mScale = 0.1f;
+		}
+	}
+	else
+	{
+		mScale = 0.1f;
+	}
+}
 void Spaceship::Render(void)
 {
 	if (mSpaceshipShape.get() != NULL) mSpaceshipShape->Render();
@@ -72,6 +88,7 @@ bool Spaceship::CollisionTest(shared_ptr<GameObject> o)
 {
 	if (o->GetType() != GameObjectType("Asteroid") &&
 		o->GetType() != GameObjectType("ExtraLife")) return false;
+	if (mInvulnerable) return false;
 	if (mBoundingShape.get() == NULL) return false;
 	if (o->GetBoundingShape().get() == NULL) return false;
 	return mBoundingShape->CollisionTest(o->GetBoundingShape());
