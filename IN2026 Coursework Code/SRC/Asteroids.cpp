@@ -131,6 +131,7 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 		if (key == 's' || key == 'S')
 		{
 			mSpaceship->SetInvulnerable(true);
+			mShieldLabel->SetText("** SHIELD ACTIVE **");
 			mShieldLabel->SetVisible(true);
 			SetTimer(5000, 4);
 		}
@@ -211,6 +212,10 @@ void Asteroids::OnTimer(int value)
 	{
 		mSpaceship->Reset();
 		mGameWorld->AddObject(mSpaceship);
+		mSpaceship->SetInvulnerable(true);
+		mShieldLabel->SetText("** SPAWN PROTECTION **");
+		mShieldLabel->SetVisible(true);
+		SetTimer(3000, 4);
 	}
 
 	if (value == START_NEXT_LEVEL)
@@ -404,6 +409,10 @@ void Asteroids::StartGame()
 	mLivesLabel->SetVisible(true);
 	mLivesLabel->SetText("Lives: 3");
 	mGameWorld->AddObject(CreateSpaceship());
+	mSpaceship->SetInvulnerable(true);
+	mShieldLabel->SetText("** SPAWN PROTECTION **");
+	mShieldLabel->SetVisible(true);
+	SetTimer(3000, 4);
 	CreateAsteroids(10);
 }
 
