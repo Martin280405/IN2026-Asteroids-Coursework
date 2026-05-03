@@ -134,6 +134,17 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 			mShieldLabel->SetVisible(true);
 			SetTimer(5000, 4);
 		}
+		if (key == 't' || key == 'T')
+		{
+			GLVector3f newPos;
+			newPos.x = (rand() % 200) - 100;
+			newPos.y = (rand() % 200) - 100;
+			newPos.z = 0.0f;
+			mSpaceship->SetPosition(newPos);
+			mSpaceship->SetVelocity(GLVector3f(0.0f, 0.0f, 0.0f));
+			mTeleportLabel->SetVisible(true);
+			SetTimer(1000, 5);
+		}
 	}
 }
 
@@ -217,6 +228,11 @@ void Asteroids::OnTimer(int value)
 		if (mSpaceship) mSpaceship->SetInvulnerable(false);
 		mShieldLabel->SetVisible(false);
 	}
+
+	if (value == 5)
+	{
+		mTeleportLabel->SetVisible(false);
+	}
 }
 
 shared_ptr<GameObject> Asteroids::CreateSpaceship()
@@ -291,7 +307,7 @@ void Asteroids::CreateGUI()
 		static_pointer_cast<GUIComponent>(mDifficultyLabel), GLVector2f(0.5f, 0.55f));
 
 	mInstructionsLabel = make_shared<GUILabel>(
-		"UP ARROW = Thrust  |  LEFT/RIGHT = Rotate  |  SPACE = Shoot  |  S = Shield  |  D = Difficulty  |  ENTER = Start");
+		"UP ARROW = Thrust  |  LEFT/RIGHT = Rotate  |  SPACE = Shoot  |  S = Shield  |  T = Teleport  |  ENTER = Start");
 	mInstructionsLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	mInstructionsLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
 	mInstructionsLabel->SetVisible(false);
@@ -318,6 +334,13 @@ void Asteroids::CreateGUI()
 	mShieldLabel->SetVisible(false);
 	mGameDisplay->GetContainer()->AddComponent(
 		static_pointer_cast<GUIComponent>(mShieldLabel), GLVector2f(0.5f, 0.8f));
+
+	mTeleportLabel = make_shared<GUILabel>("** TELEPORTED **");
+	mTeleportLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	mTeleportLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mTeleportLabel->SetVisible(false);
+	mGameDisplay->GetContainer()->AddComponent(
+		static_pointer_cast<GUIComponent>(mTeleportLabel), GLVector2f(0.5f, 0.7f));
 }
 
 void Asteroids::OnScoreChanged(int score)
@@ -376,6 +399,7 @@ void Asteroids::StartGame()
 	mInstructionsLabel->SetVisible(false);
 	mHighScoreLabel->SetVisible(false);
 	mShieldLabel->SetVisible(false);
+	mTeleportLabel->SetVisible(false);
 	mScoreLabel->SetVisible(true);
 	mLivesLabel->SetVisible(true);
 	mLivesLabel->SetText("Lives: 3");
