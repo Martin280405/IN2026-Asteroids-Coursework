@@ -444,6 +444,14 @@ std::string Asteroids::BuildHighScoreString()
 void Asteroids::CreateExtraLife()
 {
 	Animation* anim = AnimationManager::GetInstance().GetAnimationByName("extralife");
+	if (anim == nullptr) return;
+
+	// Debug - show in window title
+	std::ostringstream debug;
+	debug << "W:" << anim->GetWidth() << " H:" << anim->GetHeight() << " F:" << anim->GetNumFrames();
+	mGameOverLabel->SetText(debug.str());
+	mGameOverLabel->SetVisible(true);
+
 	shared_ptr<Sprite> sprite = make_shared<Sprite>(anim->GetWidth(), anim->GetHeight(), anim);
 	sprite->SetLoopAnimation(true);
 
